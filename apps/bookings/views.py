@@ -6,6 +6,7 @@ from apps.users.models import PanditProfile
 from .models import Booking
 from .forms import BookingForm
 from django.db import transaction
+from apps.notifications.emails import send_booking_confirmation, send_pandit_new_booking
 
 @login_required
 def checkout_view(request, pandit_slug):
@@ -40,6 +41,9 @@ def checkout_view(request, pandit_slug):
                 booking.status = Booking.Status.CONFIRMED # auto confirm for COD
                 booking.payment_mode = Booking.PaymentMode.COD
                 booking.save()
+                # Send email notifications
+                send_booking_confirmation(booking)
+                send_pandit_new_booking(booking)
                 
             messages.success(request, f"Booking Confirmed! Your Booking ID: {booking.booking_id}")
             return redirect('bookings:success', booking_id=booking.booking_id)

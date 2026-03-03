@@ -1,0 +1,41 @@
+{% extends 'base.jinja' %}
+{% block content %}
+<div class="bg-white">
+  <!-- Hero -->
+  <div class="bg-gradient-to-br from-brand-900 to-brand-700 text-white py-20 px-4 text-center">
+    <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">About SD Online Pandit Jee</h1>
+    <p class="text-brand-200 text-lg max-w-2xl mx-auto">Connecting devotees with verified, trusted pandits across Gujarat for all puja ceremonies.</p>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-4 py-16 space-y-14">
+    <div class="grid md:grid-cols-2 gap-10 items-center">
+      <div>
+        <h2 class="font-display text-3xl font-bold text-gray-900 mb-4">Our Mission 🙏</h2>
+        <p class="text-gray-600 leading-relaxed">SD Online Pandit Jee was founded to make booking a verified pandit as simple as ordering food online. We bridge the gap between devoted clients and experienced pandits, ensuring authentic Vedic rituals are accessible to everyone.</p>
+      </div>
+      <div class="bg-brand-50 rounded-2xl p-8 text-center">
+        <div class="text-5xl mb-2">🙏</div>
+        <p class="font-display text-2xl font-bold text-brand-700">500+ Pujas Performed</p>
+        <p class="text-gray-500 text-sm mt-1">Across Gujarat since our launch</p>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="font-display text-2xl font-bold text-gray-900 mb-6 text-center">Why Choose Us?</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        {% for item in [('✅', 'Verified Pandits', 'All pandits are background-checked and approved by our team before going live.'), ('⭐', 'Rated & Reviewed', 'Transparent client reviews and ratings help you choose the best pandit.'), ('📱', 'Easy Booking', 'Book in under 5 minutes, from any device, anytime.')] %}
+        <div class="card p-6 text-center">
+          <div class="text-4xl mb-3">{{ item[0] }}</div>
+          <h3 class="font-bold text-gray-900 mb-2">{{ item[1] }}</h3>
+          <p class="text-gray-500 text-sm">{{ item[2] }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="text-center">
+      <a href="{{ url('core:pandit_list') }}" class="btn-primary py-4 px-8 text-base">Browse All Pandits →</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

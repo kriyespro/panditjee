@@ -1,0 +1,36 @@
+{% extends 'base.jinja' %}
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-16">
+  <h1 class="font-display text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h1>
+  <p class="text-gray-500 mb-10">Everything you need to know about booking on SD Online Pandit Jee.</p>
+
+  <div class="space-y-4" x-data="{open: null}">
+    {% set faqs = [
+      ('How do I book a pandit?', 'Browse pandits by city and puja type, click on a pandit you like, then click "Book Now". Fill in your puja date, time, address and details and confirm.'),
+      ('Is payment online or at venue?', 'Currently we support Cash on Delivery (pay at venue). Online payment via Razorpay is coming soon.'),
+      ('Are all pandits verified?', 'Yes! Every pandit undergoes a profile review by our admin team before they are approved to appear in listings.'),
+      ('Can I cancel a booking?', 'Yes, you can cancel a booking from My Bookings page. Cancellation is free if done before 24 hours of the puja.'),
+      ('How do I become a pandit on the platform?', 'Register as a pandit, fill in your professional details, and submit. Our team will review and approve your profile within 1-2 business days.'),
+      ('What areas do you serve?', 'Currently serving Surat, Ahmedabad, Vadodara, Rajkot, and Bhavnagar. More cities coming soon!'),
+      ('How is commission calculated?', 'A small platform commission (default 20%) is deducted from each booking amount. The remaining goes to the pandit.'),
+    ] %}
+    {% for q, a in faqs %}
+    <div class="card overflow-hidden">
+      <button class="w-full text-left p-5 flex items-center justify-between font-semibold text-gray-900"
+              @click="open === {{ loop.index }} ? open = null : open = {{ loop.index }}">
+        <span>{{ q }}</span>
+        <span class="text-brand-600 text-lg transition-transform" :class="open === {{ loop.index }} ? 'rotate-45' : ''">+</span>
+      </button>
+      <div x-show="open === {{ loop.index }}" x-collapse class="px-5 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-50">
+        {{ a }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="mt-10 text-center">
+    <p class="text-gray-500">Still have questions?</p>
+    <a href="{{ url('core:contact') }}" class="btn-primary mt-3 inline-flex">Contact Us</a>
+  </div>
+</div>
+{% endblock %}

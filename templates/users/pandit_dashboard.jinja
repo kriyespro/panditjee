@@ -19,7 +19,7 @@
         </div>
       </div>
       <div>
-        <a href="{{ url('core:pandit_detail', slug=request.user.panditprofile.slug) }}" class="btn-secondary bg-white text-brand-900 border-none hover:bg-gray-50 py-2.5 shadow-lg">
+        <a href="{{ url('core:pandit_detail', slug=request.user.pandit_profile.slug) }}" class="btn-secondary bg-white text-brand-900 border-none hover:bg-gray-50 py-2.5 shadow-lg">
           View Public Profile
         </a>
       </div>
@@ -46,7 +46,7 @@
         <div class="card p-5 border-l-4 border-l-yellow-400">
           <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Average Rating</p>
           <div class="flex items-center gap-1 mt-1 font-display text-2xl font-bold text-gray-900">
-            <span class="text-yellow-400">★</span> {{ request.user.panditprofile.average_rating }}
+            <span class="text-yellow-400">★</span> {{ request.user.pandit_profile.average_rating }}
           </div>
         </div>
       </div>
@@ -125,21 +125,21 @@
             <div class="flex justify-between items-center text-sm">
               <span class="text-gray-500">Account Status</span>
               <span class="font-semibold
-               {% if request.user.panditprofile.status == 'APPROVED' %}text-green-600
-               {% elif request.user.panditprofile.status == 'PENDING' %}text-yellow-600
+               {% if request.user.pandit_profile.status == 'APPROVED' %}text-green-600
+               {% elif request.user.pandit_profile.status == 'PENDING' %}text-yellow-600
                {% else %}text-red-600{% endif %}
-               ">{{ request.user.panditprofile.status }}</span>
+               ">{{ request.user.pandit_profile.status }}</span>
             </div>
             <div class="flex justify-between items-center text-sm">
               <span class="text-gray-500">Base Price</span>
-              <span class="font-semibold text-gray-900">₹{{ request.user.panditprofile.base_price }}</span>
+              <span class="font-semibold text-gray-900">₹{{ request.user.pandit_profile.base_price }}</span>
             </div>
             <div class="flex justify-between items-center text-sm">
                <span class="text-gray-500">Base Commission</span>
-               <span class="font-semibold text-gray-900">{{ request.user.panditprofile.commission_percent or '20' }}%</span>
+               <span class="font-semibold text-gray-900">{{ request.user.pandit_profile.commission_percent or '20' }}%</span>
             </div>
           </div>
-          <a href="{{ url('users:profile') }}" class="btn-ghost w-full justify-center py-2.5 text-sm mt-5">Edit Profile</a>
+          <a href="{{ url('users:pandit_edit_profile') }}" class="btn-ghost w-full justify-center py-2.5 text-sm mt-5">Edit Profile</a>
         </div>
 
       </div>

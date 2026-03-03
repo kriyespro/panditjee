@@ -1,0 +1,53 @@
+{% extends 'base.jinja' %}
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-12">
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="text-center mb-10">
+      <h1 class="font-display text-4xl font-bold text-gray-900">Contact Us</h1>
+      <p class="text-gray-500 mt-2">We're here to help. Usually respond within 24 hours.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="card p-8">
+        <h2 class="font-bold text-gray-900 text-xl mb-6">Send a Message</h2>
+        <form method="POST" class="space-y-4">
+          {{ csrf_input }}
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Your Name</label>
+            <input type="text" name="name" required class="form-input" placeholder="Full Name">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
+            <input type="email" name="email" required class="form-input" placeholder="you@email.com">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Message</label>
+            <textarea name="message" rows="5" required class="form-input" placeholder="How can we help you?"></textarea>
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center py-3">Send Message 🙏</button>
+        </form>
+      </div>
+
+      <div class="space-y-6">
+        <div class="card p-6">
+          <h3 class="font-bold text-gray-900 mb-4">Get in Touch</h3>
+          <div class="space-y-3 text-sm text-gray-600">
+            <p>📧 support@sdonlinepanditjee.com</p>
+            <p>📞 +91 98765 43210</p>
+            <p>🕐 Mon–Sat: 9 AM – 7 PM IST</p>
+            <p>📍 Surat, Gujarat, India</p>
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="font-bold text-gray-900 mb-3">Quick Links</h3>
+          <div class="space-y-2 text-sm">
+            <a href="{{ url('core:faq') }}" class="block text-brand-600 hover:underline">Frequently Asked Questions</a>
+            <a href="{{ url('core:terms') }}" class="block text-brand-600 hover:underline">Terms & Conditions</a>
+            <a href="{{ url('core:privacy') }}" class="block text-brand-600 hover:underline">Privacy Policy</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

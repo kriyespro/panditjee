@@ -54,6 +54,21 @@
             </div>
           </div>
 
+          <!-- Price range -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Price Range (₹)</label>
+            <div class="flex gap-2">
+              <input type="number" name="min_price" placeholder="Min" value="{{ min_price }}" class="form-input text-xs py-1.5 px-2 w-full">
+              <input type="number" name="max_price" placeholder="Max" value="{{ max_price }}" class="form-input text-xs py-1.5 px-2 w-full">
+            </div>
+          </div>
+
+          <!-- Language -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Language</label>
+            <input type="text" name="language" placeholder="e.g. Hindi" value="{{ language }}" class="form-input text-xs py-1.5">
+          </div>
+
           <button type="submit" class="btn-primary w-full justify-center text-sm py-2.5">Apply Filters</button>
         </div>
       </form>
@@ -72,7 +87,7 @@
         {% if selected_puja %}
         <span class="badge badge-danger">{{ selected_puja.icon }} {{ selected_puja.name }} ×</span>
         {% endif %}
-        <span class="text-gray-500 ml-1">({{ pandits | length }} pandits found)</span>
+        <span class="text-gray-500 ml-1">({{ page_obj.paginator.count }} pandits found)</span>
       </div>
       {% endif %}
 
@@ -142,6 +157,28 @@
         </article>
         {% endfor %}
       </div>
+
+      <!-- Pagination -->
+      {% if page_obj.paginator.num_pages > 1 %}
+      <div class="flex items-center justify-center gap-2 mt-8">
+        {% if page_obj.has_previous() %}
+        <a href="?page={{ page_obj.previous_page_number() }}&city={{ selected_city.slug if selected_city else '' }}&puja={{ selected_puja.slug if selected_puja else '' }}&min_price={{ min_price }}&max_price={{ max_price }}&language={{ language }}"
+           class="px-4 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">← Prev</a>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+          {% if num == page_obj.number %}
+          <span class="px-4 py-2 text-sm font-bold bg-brand-600 text-white rounded-lg">{{ num }}</span>
+          {% elif num > page_obj.number - 3 and num < page_obj.number + 3 %}
+          <a href="?page={{ num }}&city={{ selected_city.slug if selected_city else '' }}&puja={{ selected_puja.slug if selected_puja else '' }}&min_price={{ min_price }}&max_price={{ max_price }}&language={{ language }}"
+             class="px-4 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next() %}
+        <a href="?page={{ page_obj.next_page_number() }}&city={{ selected_city.slug if selected_city else '' }}&puja={{ selected_puja.slug if selected_puja else '' }}&min_price={{ min_price }}&max_price={{ max_price }}&language={{ language }}"
+           class="px-4 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">Next →</a>
+        {% endif %}
+      </div>
+      {% endif %}
 
       {% else %}
       <!-- Empty state -->

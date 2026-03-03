@@ -114,6 +114,40 @@
       </div>
       {% endif %}
 
+      <!-- Reviews Section -->
+      <div class="card p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-bold text-gray-900 text-lg">Client Reviews
+            <span class="text-sm font-normal text-gray-400 ml-2">({{ reviews|length }})</span>
+          </h2>
+          {% if can_review %}
+          <a href="{{ url('bookings:my_bookings') }}" class="btn-primary text-xs py-1.5 px-3">✍ Write Review</a>
+          {% endif %}
+        </div>
+        {% if reviews %}
+        <div class="space-y-4">
+          {% for review in reviews %}
+          <div class="border-b border-gray-50 pb-4 last:border-0 last:pb-0">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="flex">
+                {% for i in range(5) %}
+                <span class="{{ 'text-yellow-400' if i < review.rating else 'text-gray-200' }} text-sm">★</span>
+                {% endfor %}
+              </div>
+              <span class="font-semibold text-gray-900 text-sm">{{ review.client.get_full_name() }}</span>
+              <span class="text-gray-400 text-xs ml-auto">{{ review.created_at.strftime('%d %b %Y') }}</span>
+            </div>
+            {% if review.review_text %}
+            <p class="text-gray-600 text-sm leading-relaxed">{{ review.review_text }}</p>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-500 text-sm text-center py-4">No reviews yet. Be the first to review! 🙏</p>
+        {% endif %}
+      </div>
+
     </div>
   </div>
 </div>

@@ -14,9 +14,19 @@
   </aside>
 
   <main class="flex-1 p-8">
-    <div class="mb-8 pl-0">
-      <h1 class="text-3xl font-display font-bold text-slate-900">All Bookings</h1>
-      <p class="text-slate-500 mt-1">View all platform bookings and statuses.</p>
+    <div class="mb-6 flex items-center justify-between gap-4 flex-wrap">
+      <div>
+        <h1 class="text-3xl font-display font-bold text-slate-900">All Bookings</h1>
+        <p class="text-slate-500 mt-1">View all platform bookings and statuses.</p>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        {% for val, label in status_choices %}
+        <a href="?status={{ val }}" class="text-xs px-3 py-1.5 rounded-full border font-semibold transition-colors
+          {{ 'bg-brand-600 text-white border-brand-600' if status_filter == val else 'border-slate-200 text-slate-600 hover:bg-slate-50' }}">{{ label }}</a>
+        {% endfor %}
+        <a href="?" class="text-xs px-3 py-1.5 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold">All</a>
+        <a href="{{ url('dashboard:export_bookings') }}" class="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 hover:bg-emerald-50 font-semibold">⬇ Export CSV</a>
+      </div>
     </div>
 
     <div class="card overflow-hidden">

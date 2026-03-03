@@ -25,6 +25,11 @@ INSTALLED_APPS = [
     'apps.dashboard',
     'apps.reviews',
     'apps.notifications',
+    'apps.api',
+    # Phase 2 — REST API
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -146,3 +151,30 @@ MESSAGE_TAGS = {
 SITE_NAME = 'SD Online Pandit Jee'
 SITE_TAGLINE = 'Book Verified Pandits in Gujarat'
 GLOBAL_COMMISSION_PERCENT = 20  # Default platform commission %
+
+# ─── Django REST Framework ────────────────────────────────────────────────────
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_THROTTLE_CLASSES': [],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'SD Online Pandit Jee API',
+    'DESCRIPTION': 'REST API for SD Online Pandit Jee mobile app and integrations.',
+    'VERSION': '1.0.0',
+}
+
+# ─── Cache (for password reset tokens) ───────────────────────────────────────
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}

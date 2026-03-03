@@ -14,9 +14,18 @@
   </aside>
 
   <main class="flex-1 p-8">
-    <div class="mb-8 pl-0">
-      <h1 class="text-3xl font-display font-bold text-slate-900">Manage Pandits</h1>
-      <p class="text-slate-500 mt-1">View, approve, and suspend pandit accounts.</p>
+    <div class="mb-6 flex items-center justify-between gap-4 flex-wrap">
+      <div>
+        <h1 class="text-3xl font-display font-bold text-slate-900">Manage Pandits</h1>
+        <p class="text-slate-500 mt-1">View, approve, suspend and manage pandit accounts.</p>
+      </div>
+      <div class="flex gap-2">
+        {% for val, label in status_choices %}
+        <a href="?status={{ val }}" class="text-xs px-3 py-1.5 rounded-full border font-semibold transition-colors
+          {{ 'bg-brand-600 text-white border-brand-600' if status_filter == val else 'border-slate-200 text-slate-600 hover:bg-slate-50' }}">{{ label }}</a>
+        {% endfor %}
+        <a href="?" class="text-xs px-3 py-1.5 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold">All</a>
+      </div>
     </div>
 
     <div class="card overflow-hidden">
@@ -51,20 +60,33 @@
               </td>
               <td class="p-4 font-bold text-slate-900">₹{{ pandit.base_price }}</td>
               <td class="p-4 text-right">
-                <div class="flex flex-col sm:flex-row gap-2 justify-end">
-                  {% if pandit.status != 'APPROVED' %}
+                <div class="flex flex-col gap-2 items-end">
+                  {% if pandit.status == 'PENDING' or pandit.status == 'REJECTED' %}
                   <form action="{{ url('dashboard:action_pandit', user_id=pandit.user.id) }}" method="POST" class="inline">
                     {{ csrf_input }}<input type="hidden" name="action" value="approve">
-                    <button class="bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 text-xs px-2 py-1 rounded">Approve</button>
+                    <button class="bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 text-xs px-2 py-1 rounded w-full">Approve</button>
                   </form>
                   {% endif %}
                   {% if pandit.status == 'APPROVED' %}
                   <form action="{{ url('dashboard:action_pandit', user_id=pandit.user.id) }}" method="POST" class="inline" onsubmit="return confirm('Suspend this pandit?');">
                     {{ csrf_input }}<input type="hidden" name="action" value="suspend">
-                    <button class="bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 text-xs px-2 py-1 rounded">Suspend</button>
+                    <button class="bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 text-xs px-2 py-1 rounded w-full">Suspend</button>
+                  </form>
+                  {% elif pandit.status == 'SUSPENDED' %}
+                  <form action="{{ url('dashboard:action_pandit', user_id=pandit.user.id) }}" method="POST" class="inline">
+                    {{ csrf_input }}<input type="hidden" name="action" value="reinstate">
+                    <button class="bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 text-xs px-2 py-1 rounded w-full">Reinstate</button>
                   </form>
                   {% endif %}
-                  <a href="{{ url('core:pandit_detail', slug=pandit.slug) }}" target="_blank" class="bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 text-xs px-2 py-1 rounded text-center">View</a>
+                  <!-- Set Commission -->
+                  <form action="{{ url('dashboard:action_pandit', user_id=pandit.user.id) }}" method="POST" class="flex gap-1 items-center">
+                    {{ csrf_input }}<input type="hidden" name="action" value="approve">
+                    <input type="number" name="commission_percent" placeholder="Commission %" min="0" max="100" step="0.5"
+                      value="{{ pandit.commission_percent or '' }}"
+                      class="text-xs border border-slate-200 rounded px-2 py-1 w-24 focus:outline-none focus:ring-1 focus:ring-brand-400">
+                    <button class="bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 text-xs px-2 py-1 rounded">Set %</button>
+                  </form>
+                  <a href="{{ url('core:pandit_detail', slug=pandit.slug) }}" target="_blank" class="bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 text-xs px-2 py-1 rounded text-center w-full">View</a>
                 </div>
               </td>
             </tr>

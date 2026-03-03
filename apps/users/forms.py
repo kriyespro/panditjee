@@ -1,6 +1,6 @@
 """apps/users/forms.py — Auth forms"""
 from django import forms
-from .models import User
+from .models import User, PanditProfile
 
 
 class LoginForm(forms.Form):
@@ -61,5 +61,56 @@ class PanditRegisterForm(forms.ModelForm):
     def clean(self):
         cleaned = super().clean()
         if cleaned.get('password') != cleaned.get('password2'):
+            raise forms.ValidationError('Passwords do not match.')
+        return cleaned
+
+
+class PanditEditProfileForm(forms.ModelForm):
+    """Form to edit pandit professional profile."""
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'First Name'}))
+    last_name  = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Last Name'}))
+    phone      = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Mobile Number'}))
+
+    from apps.core.models import City, PujaCategory
+    city            = forms.ModelChoiceField(queryset=City.objects.filter(is_active=True),
+                                              widget=forms.Select(attrs={'class': 'form-input'}))
+    specializations = forms.ModelMultipleChoiceField(
+        queryset=PujaCategory.objects.filter(is_active=True),
+        widget=forms.CheckboxSelectMultiple(), required=False)
+
+    class Meta:
+        model = PanditProfile
+        fields = ['city', 'experience_years', 'languages', 'base_price', 'bio']
+        widgets = {
+            'experience_years': forms.NumberInput(attrs={'class': 'form-input'}),
+            'languages':        forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'e.g. Hindi, Gujarati, Sanskrit'}),
+            'base_price':       forms.NumberInput(attrs={'class': 'form-input'}),
+            'bio':              forms.Textarea(attrs={'class': 'form-input', 'rows': 4}),
+        }
+
+
+class ClientEditProfileForm(forms.ModelForm):
+    """Form to edit client basic profile."""
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'phone']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'First Name'}),
+            'last_name':  forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Last Name'}),
+            'phone':      forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Mobile Number'}),
+        }
+
+
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'Your registered email'}))
+
+
+class ResetPasswordForm(forms.Form):
+    new_password  = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'New Password'}))
+    new_password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'Confirm New Password'}), label='Confirm Password')
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get('new_password') != cleaned.get('new_password2'):
             raise forms.ValidationError('Passwords do not match.')
         return cleaned
