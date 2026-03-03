@@ -1,0 +1,45 @@
+{% extends 'base.jinja' %}
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-12">
+  <div class="max-w-3xl mx-auto px-4">
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h1 class="font-display text-3xl font-black text-gray-900">Availability Calendar</h1>
+        <p class="text-gray-500 mt-1">Mark your available dates and time slots for the next 30 days</p>
+      </div>
+      <a href="{{ url('payments:request_payout') }}" class="btn-ghost text-sm">Payouts →</a>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <div class="grid grid-cols-7 gap-2">
+        {% for d in next_30 %}
+        {% set is_today = d == d.today() %}
+        <div class="rounded-xl border border-gray-100 p-2 text-center text-xs" x-data="{ open: false }" @click.outside="open=false">
+          <div class="font-bold text-gray-700 {% if is_today %}text-brand-600{% endif %}">{{ d.strftime('%d') }}</div>
+          <div class="text-gray-400 text-[10px]">{{ d.strftime('%a') }}</div>
+          {% for slot_val, slot_lbl in time_slots %}
+          {% set has_slot = (d, slot_val) in existing %}
+          <form method="POST" class="mt-1">
+            {{ csrf_input }}
+            <input type="hidden" name="date" value="{{ d.isoformat() }}"/>
+            <input type="hidden" name="time_slot" value="{{ slot_val }}"/>
+            <input type="hidden" name="action" value="{{ 'remove' if has_slot else 'add' }}"/>
+            <button type="submit" title="{{ slot_lbl }}"
+                    class="w-full text-[9px] px-1 py-0.5 rounded {% if has_slot %}bg-green-100 text-green-700 border border-green-200{% else %}bg-gray-50 text-gray-400 border border-gray-100 hover:bg-brand-50 hover:text-brand-600{% endif %} transition-colors">
+              {{ slot_val[0] }}
+            </button>
+          </form>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="mt-6 flex items-center gap-4 text-xs text-gray-500">
+        <span class="inline-flex items-center gap-1"><span class="w-3 h-3 rounded bg-green-100 border border-green-200 inline-block"></span> Available slot</span>
+        <span class="inline-flex items-center gap-1"><span class="w-3 h-3 rounded bg-gray-50 border border-gray-100 inline-block"></span> Not set</span>
+        <span class="text-gray-400">M=Morning · A=Afternoon · E=Evening</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

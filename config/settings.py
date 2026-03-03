@@ -25,6 +25,8 @@ INSTALLED_APPS = [
     'apps.dashboard',
     'apps.reviews',
     'apps.notifications',
+    'apps.payments',
+    'apps.blog',
     'apps.api',
     # Phase 2 — REST API
     'rest_framework',

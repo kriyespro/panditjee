@@ -1,29 +1,37 @@
-================================================================================
-  TEST CREDENTIALS - ONLINE PANDIT JEE
-  Server: http://127.0.0.1:8888/
-================================================================================
+User: admin@sd.com       | Password: admin123   | Role: ADMIN  → /admin/
+User: admin@panditjee.com | Password: admin123   | Role: STAFF  → /sd/ (Django Admin)
 
-1. ADMIN USER
-   Email    : admin@sd.com
-   Password : admin123
-   Role     : System Administrator
-   Admin    : http://127.0.0.1:8888/sd/      (Django Admin)
-   Dashboard: http://127.0.0.1:8888/admin/   (Custom Dashboard)
+--- PANDIT ACCOUNTS (Approved) ---
+Email: ram@pandit.com     | Password: pandit123  | Pandit: Ram Shastri
+Email: shyam@pandit.com   | Password: pandit123  | Pandit: Shyam Joshi
+(50 pandits auto-seeded, all at pandit{n}@demo.com / pandit123)
 
-2. PANDIT ACCOUNTS
-   A. Approved Pandit
-      Email    : pandit.ram@sd.com
-      Password : pandit123
-      Status   : APPROVED
+--- PANDIT ACCOUNTS (Other Statuses) ---
+PENDING:   pending.pandit1@test.com  / pandit123
+REJECTED:  rejected.pandit1@test.com / pandit123
+SUSPENDED: suspended.pandit1@test.com/ pandit123
 
-   B. Pending Pandit
-      Email    : pandit.shyam@sd.com
-      Password : pandit123
-      Status   : PENDING
+--- CLIENT ACCOUNTS ---
+client1@test.com  / client123
+client2@test.com  / client123
+...
+client10@test.com / client123
 
-3. CLIENT ACCOUNT
-   Email    : client.rahul@sd.com
-   Password : client123
-   Role     : Regular User / Client
+--- BOOKING STATUSES SEEDED ---
+PENDING    x8 (future dates)
+CONFIRMED  x6 (future dates)
+COMPLETED  x10 (past dates)
+CANCELLED  x5 (past dates)
+REFUNDED   x3 (past dates)
 
-================================================================================
+--- KEY URLS ---
+Home:              http://127.0.0.1:8888/
+Find Pandits:      http://127.0.0.1:8888/pandits/
+Admin Panel:       http://127.0.0.1:8888/admin/
+Django Admin:      http://127.0.0.1:8888/sd/
+API Docs:          http://127.0.0.1:8888/api/docs/
+Blog:              http://127.0.0.1:8888/blog/
+Pandit Dashboard:  http://127.0.0.1:8888/auth/pandit/dashboard/
+My Bookings:       http://127.0.0.1:8888/booking/my-bookings/
+Availability:      http://127.0.0.1:8888/pay/availability/
+Payout Request:    http://127.0.0.1:8888/pay/payout/request/
