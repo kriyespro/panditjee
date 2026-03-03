@@ -1,0 +1,23 @@
+{% extends 'base.jinja' %}
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-12">
+  <div class="card p-8">
+    <div class="flex items-center gap-4 mb-6">
+      {% if request.user.profile_image %}
+      <img src="{{ request.user.profile_image.url }}" class="w-20 h-20 rounded-2xl object-cover shadow" />
+      {% else %}
+      <div class="w-20 h-20 rounded-2xl bg-brand-600 flex items-center justify-center text-white text-3xl shadow">
+        {{ (request.user.first_name or request.user.email)[0].upper() }}
+      </div>
+      {% endif %}
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">{{ request.user.get_full_name() or request.user.email }}</h1>
+        <p class="text-gray-500 text-sm">{{ request.user.email }}</p>
+        <span class="badge badge-info mt-1">{{ request.user.role }}</span>
+      </div>
+    </div>
+    <p class="text-gray-600 text-sm">Profile edit functionality will be added in the next update. 🙏</p>
+    <a href="{{ url('core:home') }}" class="btn-primary mt-4">← Back to Home</a>
+  </div>
+</div>
+{% endblock %}

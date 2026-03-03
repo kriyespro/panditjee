@@ -1,0 +1,341 @@
+ Online Pandit Booking Platform
+
+## 📄 Developer Requirement Document (DRD)
+
+---
+
+# 1️⃣ Project Overview
+
+Build a **multi-city marketplace platform** where:
+
+* Users can book verified pandits
+* Pandits can register & manage bookings
+* Admin controls approvals, commissions & transactions
+* System deducts commission automatically
+* Platform scalable city-wise
+
+Target Phase 1: Gujarat (Surat, Ahmedabad, Vadodara)
+
+---
+
+# 2️⃣ User Roles
+
+### 1. Client (Customer)
+
+### 2. Pandit (Service Provider)
+
+### 3. Admin (Super Admin)
+
+---
+
+# 3️⃣ Client-Side Features
+
+## A. Authentication
+
+* Register (Mobile + Email OTP)
+* Login
+* Forgot Password
+* Profile management
+
+---
+
+## B. Booking Flow
+
+### Step 1: Select City
+
+* Dropdown
+* Filter pandits by city
+
+### Step 2: Select Puja Type
+
+* Puja categories managed by admin
+
+### Step 3: View Pandits
+
+Each card must show:
+
+* Profile image
+* Name
+* Experience
+* Languages
+* Starting price
+* Rating
+
+### Step 4: Pandit Detail Page
+
+* Full profile
+* Puja pricing
+* Available slots (calendar)
+* Reviews
+* Book Now button
+
+### Step 5: Booking
+
+* Select date
+* Select time
+* Add address
+* Add special notes
+
+### Step 6: Payment
+
+* Online payment gateway integration
+* Booking ID generated
+* Status = Confirmed
+
+---
+
+## C. After Booking
+
+* Booking history page
+* Cancel booking (policy based)
+* Leave rating & review
+* Download invoice (PDF)
+
+---
+
+# 4️⃣ Pandit-Side Features
+
+## A. Registration
+
+* Basic details
+* Experience
+* Specialization
+* Languages
+* ID proof upload
+* Bank details
+
+Status = Pending Approval
+
+---
+
+## B. Dashboard
+
+### Features:
+
+* View bookings
+* Accept / Reject booking
+* Update availability
+* Earnings summary
+* Transaction history
+* Profile edit
+* Rating view
+
+---
+
+## C. Payout Logic
+
+* Commission auto-deducted
+* Remaining amount stored as payable
+* Admin approves payout
+* Transfer to bank
+
+---
+
+# 5️⃣ Admin Panel Requirements
+
+## A. Pandit Management
+
+* View applications
+* Approve / Reject
+* Suspend account
+* Set individual commission %
+
+---
+
+## B. Booking Management
+
+* View all bookings
+* Manual booking creation
+* Update booking status
+* Handle cancellations
+* Refund management
+
+---
+
+## C. Financial Control
+
+* Commission settings (global + individual)
+* Transaction list
+* Revenue report
+* Payout approval system
+
+---
+
+## D. Content Management
+
+* Add/Edit Cities
+* Add/Edit Puja Categories
+* Manage Blog
+* Manage Static Pages
+* Manage Reviews
+
+---
+
+# 6️⃣ Core Database Structure (High-Level)
+
+## Tables Required:
+
+### Users
+
+* id
+* role (client/pandit/admin)
+* name
+* email
+* phone
+* password
+
+### Pandit Profile
+
+* user_id
+* city
+* experience
+* specialization
+* languages
+* price
+* rating
+* status
+
+### Booking
+
+* booking_id
+* client_id
+* pandit_id
+* puja_type
+* date
+* time
+* amount
+* commission
+* status
+
+### Transaction
+
+* booking_id
+* total_amount
+* commission_amount
+* pandit_amount
+* payment_status
+
+### Reviews
+
+* booking_id
+* rating
+* review_text
+
+---
+
+# 7️⃣ Booking Status Flow
+
+```
+Pending Payment
+        ↓
+Paid
+        ↓
+Accepted by Pandit
+        ↓
+Completed
+        ↓
+Reviewed
+```
+
+Cancel states:
+
+* Cancelled by Client
+* Cancelled by Pandit
+* Refunded
+
+---
+
+# 8️⃣ Commission Logic
+
+Example:
+
+Booking Amount = ₹5,000
+Commission = 20%
+
+System Calculation:
+
+* Commission = ₹1,000
+* Pandit Receives = ₹4,000
+
+Commission stored in admin revenue ledger.
+
+---
+
+# 9️⃣ Notification System
+
+Required:
+
+* SMS on booking confirmation
+* Email confirmation
+* WhatsApp notification (Phase 2)
+* Booking reminders
+* Payment confirmation
+
+---
+
+# 🔟 Phase 2 Features (Scalable Architecture Required)
+
+* Wallet system (client & pandit)
+* Subscription model for pandits
+* Featured listing
+* Dynamic surge pricing
+* Multi-state expansion
+* Mobile app readiness
+* Analytics dashboard
+
+---
+
+# 1️⃣1️⃣ Security Requirements
+
+* Role-based access control
+* Secure payment integration
+* Data encryption
+* Admin audit logs
+* OTP verification
+* Basic fraud prevention
+
+---
+
+# 1️⃣2️⃣ Non-Functional Requirements
+
+* Mobile responsive
+* Fast load time
+* SEO friendly
+* Scalable architecture
+* Modular code structure
+* Clean API-ready backend
+
+---
+
+# 🎯 Development Priority Phases
+
+### Phase 1 (MVP)
+
+✔ Registration
+✔ Booking system
+✔ Payment integration
+✔ Commission logic
+✔ Admin approval
+✔ Review system
+
+### Phase 2
+
+✔ Wallet
+✔ Subscription
+✔ WhatsApp automation
+✔ Reports & analytics
+
+---
+
+# 💼 Business Logic Summary for Developers
+
+This is a:
+
+✔ Marketplace model
+✔ Commission-based revenue
+✔ Multi-vendor service platform
+✔ City-filtered booking engine
+✔ Scalable state-wise expansion system
+
+---
+

@@ -1,0 +1,153 @@
+{% extends 'base.jinja' %}
+
+{% block content %}
+<div class="py-10 px-4 max-w-3xl mx-auto" x-data="{ step: 1 }">
+
+  <div class="text-center mb-8">
+    <div class="w-16 h-16 bg-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+      <span class="text-white text-3xl">🕉️</span>
+    </div>
+    <h1 class="text-2xl font-bold text-gray-900">Register as Pandit Ji</h1>
+    <p class="text-gray-500 text-sm mt-1">Join our platform and grow your bookings across Gujarat</p>
+  </div>
+
+  <!-- Step indicators -->
+  <div class="flex items-center justify-center gap-2 mb-8">
+    {% for s, label in [(1,'Basic Info'),(2,'Professional'),(3,'Bank Details')] %}
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all"
+           :class="step >= {{ s }} ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-400'">{{ s }}</div>
+      <span class="text-xs font-medium hidden sm:block transition-all"
+            :class="step >= {{ s }} ? 'text-brand-600' : 'text-gray-400'">{{ label }}</span>
+      {% if s < 3 %}<div class="w-8 h-px bg-gray-200" :class="step > {{ s }} ? 'bg-brand-600' : 'bg-gray-200'"></div>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="card p-8">
+    <form method="POST" action="{{ url('users:register_pandit') }}" enctype="multipart/form-data" class="space-y-5">
+      {{ csrf_input }}
+
+      <!-- Step 1: Basic Info -->
+      <div x-show="step === 1" class="space-y-4">
+        <h2 class="font-bold text-gray-800 text-lg mb-4">Basic Information</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">First Name *</label>
+            <input type="text" name="first_name" placeholder="First Name" required
+                   class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Last Name *</label>
+            <input type="text" name="last_name" placeholder="Last Name" required
+                   class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Email Address *</label>
+          <input type="email" name="email" placeholder="Email" required
+                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Mobile Number *</label>
+          <input type="text" name="phone" placeholder="e.g. 9876543210" required
+                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Password *</label>
+            <input type="password" name="password" placeholder="Password" required
+                   class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password *</label>
+            <input type="password" name="password2" placeholder="Confirm Password" required
+                   class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+          </div>
+        </div>
+        <button type="button" @click="step = 2" class="btn-primary w-full justify-center py-3 mt-2">
+          Next: Professional Details →
+        </button>
+      </div>
+
+      <!-- Step 2: Professional -->
+      <div x-show="step === 2" class="space-y-4">
+        <h2 class="font-bold text-gray-800 text-lg mb-4">Professional Details</h2>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">City *</label>
+          <select name="city" class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600">
+            <option value="">Select City</option>
+            {% for city in form.city.field.queryset %}
+            <option value="{{ city.pk }}">{{ city.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Years of Experience *</label>
+          <input type="number" name="experience_years" min="0" placeholder="e.g. 10"
+                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Languages Known *</label>
+          <input type="text" name="languages" placeholder="e.g. Hindi, Gujarati, Sanskrit"
+                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Starting Price (₹) *</label>
+          <input type="number" name="base_price" min="1" placeholder="e.g. 1500"
+                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Puja Specializations</label>
+          <div class="grid grid-cols-2 gap-2 p-4 border border-gray-200 rounded-xl bg-gray-50 max-h-48 overflow-y-auto">
+            {% for cat in form.specializations.field.queryset %}
+            <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <input type="checkbox" name="specializations" value="{{ cat.pk }}"
+                     class="rounded border-gray-300 text-brand-600" />
+              {{ cat.icon }} {{ cat.name }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">ID Proof (Optional)</label>
+          <input type="file" name="id_proof" accept=".pdf,.jpg,.jpeg,.png"
+                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+        </div>
+        <div class="flex gap-3">
+          <button type="button" @click="step = 1" class="btn-outline flex-1 justify-center py-3">← Back</button>
+          <button type="button" @click="step = 3" class="btn-primary flex-1 justify-center py-3">Next: Bank Details →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Bank Details -->
+      <div x-show="step === 3" class="space-y-4">
+        <h2 class="font-bold text-gray-800 text-lg mb-4">Bank Details <span class="text-gray-400 font-normal text-sm">(for payouts)</span></h2>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Account Holder Name</label>
+          <input type="text" name="bank_account_name" placeholder="As per bank records"
+                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Account Number</label>
+          <input type="text" name="bank_account_number" placeholder="Bank account number"
+                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">IFSC Code</label>
+          <input type="text" name="ifsc_code" placeholder="e.g. SBIN0001234"
+                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+        </div>
+        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-800">
+          ⚠️ Your account will be <strong>pending review</strong> until admin approves your profile. You'll be notified by email.
+        </div>
+        <div class="flex gap-3">
+          <button type="button" @click="step = 2" class="btn-outline flex-1 justify-center py-3">← Back</button>
+          <button type="submit" class="btn-primary flex-1 justify-center py-3">🙏 Submit Registration</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}

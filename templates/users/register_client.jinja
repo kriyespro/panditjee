@@ -1,0 +1,78 @@
+{% extends 'base.jinja' %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-10 px-4">
+  <div class="max-w-xl mx-auto">
+
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <a href="{{ url('core:home') }}" class="inline-flex items-center gap-2 text-gray-500 text-sm hover:text-brand-600 mb-5 transition-colors">
+        ← Back to Home
+      </a>
+      <div class="w-14 h-14 bg-brand-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg">🕉️</div>
+      <h1 class="font-display text-2xl font-bold text-gray-900">Create Your Account</h1>
+      <p class="text-gray-500 text-sm mt-1.5 max-w-sm mx-auto">Join thousands of devotees booking verified pandits online</p>
+    </div>
+
+    <div class="card p-8">
+      <form method="POST" action="{{ url('users:register_client') }}" class="space-y-4">
+        {{ csrf_input }}
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">First Name *</label>
+            <input type="text" name="first_name" placeholder="First Name" required class="input-field" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Last Name *</label>
+            <input type="text" name="last_name" placeholder="Last Name" required class="input-field" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Email Address *</label>
+          <input type="email" name="email" placeholder="you@example.com" required class="input-field" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Mobile Number *</label>
+          <div class="flex gap-2">
+            <div class="flex items-center px-3 border border-gray-200 rounded-xl bg-gray-50 text-sm text-gray-600 font-medium shrink-0">+91</div>
+            <input type="text" name="phone" placeholder="9876543210" required class="input-field flex-1" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Password *</label>
+            <input type="password" name="password" placeholder="Min 8 characters" required class="input-field" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Confirm Password *</label>
+            <input type="password" name="password2" placeholder="Re-enter password" required class="input-field" />
+          </div>
+        </div>
+
+        {% if form.non_field_errors() %}
+        <div class="p-3 bg-red-50 border border-red-100 rounded-xl text-xs text-red-600">
+          {{ form.non_field_errors() | join(', ') }}
+        </div>
+        {% endif %}
+
+        <button type="submit" class="btn-primary w-full justify-center py-3.5 text-sm mt-1">
+          🙏 Create Account
+        </button>
+
+        <p class="text-xs text-gray-400 text-center">
+          By creating an account, you agree to our <a href="#" class="text-brand-600 underline">Terms of Service</a> and <a href="#" class="text-brand-600 underline">Privacy Policy</a>.
+        </p>
+      </form>
+    </div>
+
+    <div class="text-center mt-5 text-sm text-gray-500">
+      Already have an account?
+      <a href="{{ url('users:login') }}" class="text-brand-600 font-bold hover:text-brand-700 ml-1">Sign in</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

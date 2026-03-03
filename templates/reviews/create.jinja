@@ -1,0 +1,56 @@
+{% extends 'base.jinja' %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-[80vh] py-10 px-4 flex items-center justify-center">
+  <div class="max-w-md w-full">
+    
+    <div class="mb-6 text-center">
+      <h1 class="font-display text-2xl font-bold text-gray-900">Rate Pandit Ji</h1>
+      <p class="text-gray-500 text-sm mt-1">Share your experience for booking {{ booking.booking_id|string|truncate(8, False, '')|upper }}</p>
+    </div>
+
+    <div class="card p-8">
+      <div class="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
+        {% if booking.pandit.user.profile_image %}
+        <img src="{{ booking.pandit.user.profile_image.url }}" class="w-16 h-16 rounded-xl object-cover" />
+        {% else %}
+        <div class="w-16 h-16 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-2xl">
+          {{ booking.pandit.user.first_name[0].upper() }}
+        </div>
+        {% endif %}
+        <div>
+          <h3 class="font-bold text-gray-900">Pt. {{ booking.pandit.user.get_full_name() }}</h3>
+          <p class="text-xs text-gray-500">{{ booking.puja_category.name if booking.puja_category else 'General Puja' }}</p>
+        </div>
+      </div>
+
+      <form method="POST" action="">
+        {{ csrf_input }}
+        
+        <div class="mb-5 text-center">
+          <label class="block text-sm font-semibold text-gray-900 mb-2">How was the ceremony? (1 to 5 Stars)</label>
+          <div class="flex justify-center">
+            {{ form.rating }}
+          </div>
+          {% if form.rating.errors %}<p class="text-red-500 text-xs mt-1">{{ form.rating.errors | join(', ') }}</p>{% endif %}
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Review / Feedback</label>
+          {{ form.review_text }}
+          {% if form.review_text.errors %}<p class="text-red-500 text-xs mt-1">{{ form.review_text.errors | join(', ') }}</p>{% endif %}
+        </div>
+
+        <button type="submit" class="btn-primary w-full justify-center py-3.5 shadow-md">
+          Submit Review
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center mt-6">
+      <a href="{{ url('bookings:my_bookings') }}" class="text-sm font-medium text-gray-500 hover:text-gray-900">Cancel</a>
+    </p>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'base.jinja' %}
+
+{% block content %}
+<div class="flex min-h-screen bg-gray-50">
+  
+  <!-- Sidebar -->
+  <aside class="w-64 bg-slate-900 text-slate-300 flex-shrink-0 hidden md:flex flex-col">
+    <div class="h-16 flex items-center px-6 bg-slate-950 text-white font-display font-bold text-xl">
+      SD Admin Panel
+    </div>
+    <div class="p-4 flex-1 space-y-2">
+      <a href="{{ url('dashboard:home') }}" class="block px-4 py-2.5 rounded-lg bg-brand-600 text-white font-medium">Dashboard</a>
+      <a href="{{ url('dashboard:pandits') }}" class="block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">Pandits</a>
+      <a href="{{ url('dashboard:bookings') }}" class="block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">Bookings</a>
+      <a href="/sd/" class="block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors" target="_blank">Django Admin ↗</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8">
+    
+    <div class="mb-8 flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-display font-bold text-slate-900">Admin Dashboard</h1>
+        <p class="text-slate-500 mt-1">Platform overview and pending actions.</p>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="card p-6 border-l-4 border-l-blue-500">
+        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Total Users</p>
+        <p class="text-3xl font-bold font-display text-slate-900 mt-2">{{ total_users }}</p>
+      </div>
+      <div class="card p-6 border-l-4 border-l-saffron-500">
+        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Approved Pandits</p>
+        <p class="text-3xl font-bold font-display text-slate-900 mt-2">{{ total_pandits }}</p>
+      </div>
+      <div class="card p-6 border-l-4 border-l-emerald-500">
+        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Total Bookings</p>
+        <p class="text-3xl font-bold font-display text-slate-900 mt-2">{{ total_bookings }}</p>
+      </div>
+      <div class="card p-6 border-l-4 border-l-brand-600">
+        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Platform Revenue</p>
+        <p class="text-3xl font-bold font-display text-brand-600 mt-2">₹{{ total_revenue }}</p>
+      </div>
+    </div>
+
+    <!-- Layout Grids -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      <!-- Pending Pandits -->
+      <div class="card overflow-hidden flex flex-col">
+        <div class="bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center">
+          <h2 class="font-bold text-slate-900">Pending Pandit Approvals</h2>
+          <span class="bg-amber-100 text-amber-800 py-1 px-3 rounded-full text-xs font-bold">{{ pending_pandits.count() }} Pending</span>
+        </div>
+        <div class="p-0 flex-1 bg-slate-50">
+          {% if pending_pandits %}
+          <ul class="divide-y divide-slate-100">
+            {% for pandit in pending_pandits %}
+            <li class="p-6 bg-white hover:bg-slate-50 transition-colors">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-slate-900">{{ pandit.user.get_full_name() }}</h3>
+                  <p class="text-sm text-slate-500">{{ pandit.city.name }} • Exp: {{ pandit.experience_years }} yrs</p>
+                  <a href="{{ url('core:pandit_detail', slug=pandit.slug) }}" target="_blank" class="text-xs text-brand-600 font-medium hover:underline mt-1 inline-block">View Profile →</a>
+                </div>
+                <div class="flex gap-2">
+                  <form action="{{ url('dashboard:action_pandit', user_id=pandit.user.id) }}" method="POST">
+                    {{ csrf_input }}<input type="hidden" name="action" value="approve">
+                    <button type="submit" class="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded text-xs font-bold transition-colors">Approve</button>
+                  </form>
+                  <form action="{{ url('dashboard:action_pandit', user_id=pandit.user.id) }}" method="POST">
+                    {{ csrf_input }}<input type="hidden" name="action" value="reject">
+                    <button type="submit" class="bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded text-xs font-bold transition-colors">Reject</button>
+                  </form>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <div class="p-8 text-center text-slate-500">No pending approvals! You are all caught up.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Recent Bookings -->
+      <div class="card overflow-hidden">
+        <div class="bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center">
+          <h2 class="font-bold text-slate-900">Recent Bookings</h2>
+          <a href="{{ url('dashboard:bookings') }}" class="text-xs font-bold text-brand-600 hover:text-brand-700">View All</a>
+        </div>
+        <div class="p-0">
+          {% if recent_bookings %}
+          <ul class="divide-y divide-slate-100">
+            {% for booking in recent_bookings %}
+            <li class="p-4 hover:bg-slate-50 transition-colors">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="font-semibold text-slate-900 text-sm">{{ booking.puja_category.name if booking.puja_category else 'Puja' }}</p>
+                  <p class="text-xs text-slate-500">Client: {{ booking.client.get_full_name() }} • Pandit: {{ booking.pandit.user.get_full_name() }}</p>
+                  <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-wide">ID: {{ booking.booking_id|string|truncate(8, False, '') }}</p>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded uppercase
+                    {% if booking.status == 'PENDING' %}bg-amber-100 text-amber-800
+                    {% elif booking.status == 'CONFIRMED' %}bg-sky-100 text-sky-800
+                    {% elif booking.status == 'COMPLETED' %}bg-emerald-100 text-emerald-800
+                    {% else %}bg-slate-100 text-slate-600{% endif %}">
+                    {{ booking.status }}
+                  </span>
+                  <p class="text-sm font-bold text-brand-600 mt-1">₹{{ booking.amount }}</p>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <div class="p-8 text-center text-slate-500">No recent bookings.</div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+{% endblock %}

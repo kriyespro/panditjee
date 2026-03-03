@@ -1,0 +1,123 @@
+{% extends 'base.jinja' %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-10 px-4">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Header -->
+    <div class="mb-8">
+      <a href="{{ url('core:pandit_detail', slug=pandit.slug) }}" class="inline-flex items-center gap-2 text-gray-500 text-sm hover:text-brand-600 mb-4 transition-colors">
+        ← Back to Pandit Profile
+      </a>
+      <h1 class="font-display text-3xl font-bold text-gray-900">Secure Checkout</h1>
+      <p class="text-gray-500 text-sm mt-1">Provide details for your puja ceremony to confirm the booking</p>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+      
+      <!-- Checkout Form -->
+      <div class="flex-1">
+        <div class="card p-8">
+          <form method="POST" action="" class="space-y-6">
+            {{ csrf_input }}
+
+            <!-- Ceremony Info -->
+            <div>
+              <h3 class="font-bold text-gray-900 border-b border-gray-100 pb-2 mb-4">1. Ceremony Details</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Select Puja Type *</label>
+                  {{ form.puja_category }}
+                  {% if form.puja_category.errors %}<p class="text-red-500 text-xs mt-1">{{ form.puja_category.errors | join(', ') }}</p>{% endif %}
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Date *</label>
+                    {{ form.puja_date }}
+                    {% if form.puja_date.errors %}<p class="text-red-500 text-xs mt-1">{{ form.puja_date.errors | join(', ') }}</p>{% endif %}
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Time *</label>
+                    {{ form.puja_time }}
+                    {% if form.puja_time.errors %}<p class="text-red-500 text-xs mt-1">{{ form.puja_time.errors | join(', ') }}</p>{% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Address Info -->
+            <div>
+              <h3 class="font-bold text-gray-900 border-b border-gray-100 pb-2 mb-4">2. Venue Address</h3>
+              <div>
+                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Full Address (including city) *</label>
+                {{ form.address }}
+                {% if form.address.errors %}<p class="text-red-500 text-xs mt-1">{{ form.address.errors | join(', ') }}</p>{% endif %}
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div>
+              <h3 class="font-bold text-gray-900 border-b border-gray-100 pb-2 mb-4">3. Special Requirements</h3>
+              <div>
+                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Any specific instructions or items needed? (Optional)</label>
+                {{ form.special_notes }}
+                {% if form.special_notes.errors %}<p class="text-red-500 text-xs mt-1">{{ form.special_notes.errors | join(', ') }}</p>{% endif %}
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary w-full justify-center py-4 text-base shadow-lg">
+              Confirm Booking (Cash on Delivery)
+            </button>
+            <p class="text-xs text-center text-gray-500 mt-3">By clicking confirm, you agree to our cancellation policy.</p>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- Order Summary Sticky Sidebar -->
+      <aside class="lg:w-80 shrink-0">
+        <div class="card p-6 sticky top-24">
+          <h3 class="font-bold text-gray-900 border-b border-gray-100 pb-3 mb-4 text-base">Booking Summary</h3>
+          
+          <div class="flex items-center gap-3 mb-5">
+            {% if pandit.user.profile_image %}
+            <img src="{{ pandit.user.profile_image.url }}" class="w-12 h-12 rounded-xl object-cover" />
+            {% else %}
+            <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center text-xl font-bold">
+              {{ pandit.user.first_name[0].upper() }}
+            </div>
+            {% endif %}
+            <div>
+              <div class="font-bold text-gray-900 text-sm">Pt. {{ pandit.user.get_full_name() }}</div>
+              <div class="text-xs text-gray-500">📍 {{ pandit.city.name if pandit.city else 'Various Locations' }}</div>
+            </div>
+          </div>
+
+          <div class="space-y-3 text-sm text-gray-600 mb-5">
+            <div class="flex justify-between">
+              <span>Service Fee</span>
+              <span class="font-semibold text-gray-900">₹{{ pandit.base_price }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Platform Fee</span>
+              <span class="text-green-600 font-medium text-xs border border-green-200 bg-green-50 px-2 py-0.5 rounded">FREE for MVP</span>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-100 pt-3 flex justify-between items-end">
+            <div>
+              <div class="text-xs text-gray-500 font-semibold uppercase tracking-wide">Total to Pay (COD)</div>
+            </div>
+            <div class="text-2xl font-bold font-display text-brand-600">₹{{ pandit.base_price }}</div>
+          </div>
+
+          <div class="bg-blue-50 text-blue-800 text-xs p-3 rounded-lg mt-5 border border-blue-100">
+            ℹ️ You will pay the pandit directly at the venue after the puja completion.
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

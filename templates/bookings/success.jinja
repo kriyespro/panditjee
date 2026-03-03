@@ -1,0 +1,47 @@
+{% extends 'base.jinja' %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center bg-gray-50 py-12 px-4">
+  <div class="w-full max-w-lg">
+    
+    <div class="card p-8 text-center relative overflow-hidden">
+      <!-- Success background confetti logic could go here -->
+      <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
+        <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-green-200 to-green-400 opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
+      </div>
+
+      <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-4xl mx-auto mb-6 shadow-sm border-4 border-white">
+        ✅
+      </div>
+      
+      <h1 class="font-display text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
+      <p class="text-gray-500 text-sm mb-8">Thank you, {{ request.user.first_name }}. Your booking for <strong>{{ booking.puja_category.name if booking.puja_category else 'Puja' }}</strong> has been confirmed.</p>
+      
+      <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-left space-y-3 mb-8">
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Booking ID</span>
+          <span class="font-mono font-bold text-gray-900">{{ booking.booking_id|string|truncate(8, False, '')|upper }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Pandit</span>
+          <span class="font-semibold text-gray-900">Pt. {{ booking.pandit.user.get_full_name() }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Date & Time</span>
+          <span class="font-semibold text-gray-900">{{ booking.puja_date }} at {{ booking.puja_time }}</span>
+        </div>
+        <div class="flex justify-between text-sm border-t border-gray-200 pt-3">
+          <span class="text-gray-500">Amount to Pay (COD)</span>
+          <span class="font-bold text-brand-600">₹{{ booking.amount }}</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="{{ url('bookings:my_bookings') }}" class="btn-primary flex-1 justify-center py-3">View My Bookings</a>
+        <a href="{{ url('core:home') }}" class="btn-outline flex-1 justify-center py-3">Return to Home</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

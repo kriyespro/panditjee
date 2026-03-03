@@ -1,0 +1,78 @@
+{% extends 'base.jinja' %}
+
+{% block content %}
+<div class="flex min-h-screen bg-gray-50">
+  
+  <aside class="w-64 bg-slate-900 text-slate-300 flex-shrink-0 hidden md:flex flex-col">
+    <div class="h-16 flex items-center px-6 bg-slate-950 text-white font-display font-bold text-xl">SD Admin Panel</div>
+    <div class="p-4 flex-1 space-y-2">
+      <a href="{{ url('dashboard:home') }}" class="block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">Dashboard</a>
+      <a href="{{ url('dashboard:pandits') }}" class="block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">Pandits</a>
+      <a href="{{ url('dashboard:bookings') }}" class="block px-4 py-2.5 rounded-lg bg-brand-600 text-white font-medium">Bookings</a>
+      <a href="/sd/" class="block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors" target="_blank">Django Admin ↗</a>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-8">
+    <div class="mb-8 pl-0">
+      <h1 class="text-3xl font-display font-bold text-slate-900">All Bookings</h1>
+      <p class="text-slate-500 mt-1">View all platform bookings and statuses.</p>
+    </div>
+
+    <div class="card overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200">
+              <th class="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Booking ID / Date</th>
+              <th class="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Client & Pandit</th>
+              <th class="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+              <th class="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
+              <th class="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Commission</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for booking in bookings %}
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="p-4">
+                <div class="font-mono text-xs font-bold text-slate-700 bg-slate-100 px-1 inline-block rounded">{{ booking.booking_id|string|truncate(8, False, '')|upper }}</div>
+                <div class="text-xs font-bold text-slate-900 mt-1">{{ booking.puja_category.name if booking.puja_category else 'General' }}</div>
+                <div class="text-xs text-slate-500">{{ booking.puja_date }} {{ booking.puja_time.strftime('%H:%M') }}</div>
+              </td>
+              <td class="p-4">
+                <div class="text-sm">
+                  <span class="text-slate-500 mr-1">C:</span> <span class="font-semibold text-slate-900">{{ booking.client.get_full_name() }}</span>
+                </div>
+                <div class="text-sm mt-1">
+                  <span class="text-slate-500 mr-1">P:</span> <span class="font-semibold text-slate-900">{{ booking.pandit.user.get_full_name() }}</span>
+                </div>
+              </td>
+              <td class="p-4">
+                <span class="text-[10px] font-bold px-2 py-1 rounded uppercase
+                  {% if booking.status == 'PENDING' %}bg-amber-100 text-amber-800
+                  {% elif booking.status == 'CONFIRMED' %}bg-sky-100 text-sky-800
+                  {% elif booking.status == 'COMPLETED' %}bg-emerald-100 text-emerald-800
+                  {% elif booking.status == 'CANCELLED' %}bg-red-100 text-red-800
+                  {% else %}bg-slate-200 text-slate-600{% endif %}">
+                  {{ booking.status }}
+                </span>
+                <div class="text-[10px] text-slate-400 mt-1">{{ booking.get_payment_mode_display() }}</div>
+              </td>
+              <td class="p-4 font-bold text-slate-900">₹{{ booking.amount }}</td>
+              <td class="p-4 text-right">
+                <div class="font-bold text-brand-600">₹{{ booking.commission_amount }}</div>
+                <div class="text-xs text-green-600 mt-1">Pandit gets: ₹{{ booking.pandit_amount }}</div>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="5" class="p-8 text-center text-slate-500">No bookings found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,552 @@
+================================================================================
+  SD ONLINE PANDIT JEE — PROJECT PLAN
+  Multi-City Pandit Booking Marketplace
+  Target Launch: Gujarat (Surat, Ahmedabad, Vadodara)
+================================================================================
+
+TECH STACK
+----------
+- Backend   : Python 3.12 + Django 5
+- Templates : Jinja2 (.jinja) + Django Templates (admin only)
+- Frontend  : Tailwind CSS CDN + Alpine.js CDN + HTMX
+- Database  : SQLite (dev) → PostgreSQL (prod)
+- Payments  : Razorpay (Phase 1)
+- Notifications : Email (SMTP) + SMS via Fast2SMS (MVP)
+- WhatsApp  : Twilio / Meta API (Phase 2)
+
+FOLDER STRUCTURE
+----------------
+sd-onlinepanditjee/
+├── manage.py
+├── durga.py              ← clear cache + runserver script
+├── plan.txt
+├── dev.txt               ← progress tracker
+├── test_user.txt         ← test credentials
+├── requirements.txt
+├── config/               ← Django project settings
+│   ├── settings.py
+│   ├── urls.py
+│   └── jinja2.py         ← Jinja2 environment
+├── apps/
+│   ├── core/             ← home, cities, puja categories, static pages
+│   ├── users/            ← auth, profiles (client + pandit)
+│   ├── bookings/         ← booking flow, status, calendar
+│   ├── payments/         ← Razorpay integration, transactions
+│   ├── reviews/          ← ratings & reviews
+│   ├── notifications/    ← email / SMS helpers
+│   └── dashboard/        ← custom admin dashboard at /admin
+├── templates/
+│   ├── base.jinja
+│   ├── components/       ← reusable UI components
+│   ├── core/
+│   ├── users/
+│   ├── bookings/
+│   ├── payments/
+│   ├── reviews/
+│   └── dashboard/
+└── static/
+    ├── css/
+    ├── js/
+    └── images/
+
+================================================================================
+  MVP — "GET THE PLATFORM ONLINE" (Week 1-2)
+================================================================================
+
+GOAL: A working, error-free platform where:
+  ✔ Admin can approve pandits and manage content
+  ✔ Pandits can register and receive bookings
+  ✔ Clients can search, view, and book a pandit (COD/manual payment)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MVP STEP 1 — Project Bootstrap
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Create virtual environment (Python 3.12)
+[ ] Install Django 5, Jinja2, Pillow, python-decouple, whitenoise
+[ ] Create Django project: config/
+[ ] Configure settings.py:
+    - Jinja2 as primary template engine (.jinja files)
+    - Django Templates for /sd/ admin only
+    - SQLite DB
+    - Static files via whitenoise
+    - MEDIA_URL / MEDIA_ROOT
+[ ] Create durga.py (clear cache + runserver)
+[ ] Create requirements.txt
+[ ] Create test_user.txt
+[ ] Git init + .gitignore
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MVP STEP 2 — Core App + Base Templates
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Create `core` app
+[ ] Models:
+    - City (name, slug, state, is_active)
+    - PujaCategory (name, slug, icon, description, is_active)
+[ ] Create base.jinja:
+    - Navigation with role-aware links (client / pandit / admin)
+    - Footer
+    - Flash messages
+    - Tailwind CDN + Alpine.js CDN + HTMX CDN
+[ ] Reusable components:
+    - nav.jinja, footer.jinja, alert.jinja, card.jinja, breadcrumb.jinja
+[ ] Home page (/)
+    - Hero section with city selector
+    - Popular puja categories
+    - How it works (3 steps)
+    - Testimonials placeholder
+[ ] City listing page
+[ ] Puja category listing page
+[ ] Admin at /sd/ — register City & PujaCategory via Django admin
+[ ] Run migrations + test
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MVP STEP 3 — Users App (Auth + Profiles)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Create `users` app
+[ ] Custom User model (AbstractUser):
+    - role: CLIENT / PANDIT / ADMIN
+    - phone (unique)
+    - profile_image
+[ ] PanditProfile model:
+    - user (OneToOne)
+    - city (FK)
+    - experience_years
+    - specializations (M2M → PujaCategory)
+    - languages (CharField)
+    - base_price
+    - id_proof (FileField)
+    - bank_account_name, bank_account_number, ifsc_code
+    - status: PENDING / APPROVED / REJECTED / SUSPENDED
+    - commission_percent (override global if set)
+    - average_rating
+    - total_bookings
+[ ] ClientProfile model:
+    - user (OneToOne)
+    - saved_address
+[ ] Auth views:
+    - Register (client or pandit path)
+    - Login / Logout
+    - Forgot Password (email OTP — simple 6-digit token)
+    - Email verification on register
+[ ] Jinja2 Templates:
+    - register_client.jinja, register_pandit.jinja
+    - login.jinja, forgot_password.jinja
+    - client_profile.jinja (edit basic info)
+    - pandit_public_profile.jinja (visible to clients)
+[ ] Pandit Registration Form (multi-step):
+    Step 1: Basic info (name, email, phone, password)
+    Step 2: Professional details (exp, puja types, languages, price)
+    Step 3: Document upload (ID proof)
+    Step 4: Bank details
+    → Status set to PENDING on submit
+    → Admin gets notified via email
+[ ] Run migrations + test all auth flows
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MVP STEP 4 — Pandit Discovery + Listing
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Pandit listing page (/pandits/?city=surat&puja=satyanarayana-puja)
+    - Filter by city, puja type, price range, language
+    - Pandit cards: photo, name, experience, languages, price, rating
+    - Pagination
+[ ] Pandit detail page (/pandits/<slug>/)
+    - Full profile
+    - Puja types offered with prices (PujaPrice model)
+    - Availability calendar (simple date picker, no slot logic yet)
+    - Reviews section
+    - "Book Now" CTA button
+[ ] PujaPrice model:
+    - pandit (FK)
+    - puja_category (FK)
+    - price
+[ ] Run + test
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MVP STEP 5 — Booking Flow (Cash on Delivery / Manual)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Create `bookings` app
+[ ] Booking model:
+    - booking_id (UUID)
+    - client (FK → User)
+    - pandit (FK → PanditProfile)
+    - puja_category (FK)
+    - puja_date
+    - puja_time
+    - address
+    - special_notes
+    - amount
+    - commission_amount
+    - pandit_amount
+    - status: PENDING / CONFIRMED / COMPLETED / CANCELLED / REFUNDED
+    - payment_mode: ONLINE / COD
+    - created_at
+[ ] Booking flow (HTMX multi-step form):
+    Step 1: Select date, time
+    Step 2: Add address & notes
+    Step 3: Confirm & summary
+    Step 4: "Pay at Venue (COD)" → status = CONFIRMED
+[ ] Booking confirmation page + Booking ID shown
+[ ] Client: My Bookings page
+[ ] Cancel booking (client side — within 24hr policy)
+[ ] Email confirmation sent on booking
+[ ] Run + test booking end-to-end
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MVP STEP 6 — Pandit Dashboard (MVP)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Pandit dashboard at /pandit/dashboard/
+[ ] Dashboard cards: Total Bookings, Upcoming, Earnings, Rating
+[ ] Upcoming bookings table (Accept / Reject buttons via HTMX)
+[ ] Booking history table
+[ ] Mark booking as COMPLETED
+[ ] Edit profile (name, languages, price, photo)
+[ ] Availability: block/unblock dates (simple date list)
+[ ] Earnings summary: total earned, commission deducted, pending payout
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MVP STEP 7 — Admin Custom Dashboard (MVP)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Custom admin dashboard at /admin/ (separate from /sd/)
+[ ] Sidebar navigation with grouped sections
+[ ] Overview cards: Total Users, Pandits, Bookings Today, Revenue
+[ ] Pandit Management:
+    - Pending approvals list → Approve / Reject (HTMX one-click)
+    - All pandits table with status filter
+    - Suspend / Reinstate
+    - Set individual commission %
+[ ] Booking Management:
+    - All bookings with filters (status, city, date)
+    - Manual booking creation
+    - Update booking status
+[ ] Content Management:
+    - Add/Edit Cities
+    - Add/Edit Puja Categories
+[ ] Global commission setting
+[ ] Admin login protected with @admin_required decorator
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MVP STEP 8 — Reviews + Notifications (MVP)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Create `reviews` app
+[ ] Review model: booking, rating (1-5), review_text, created_at
+[ ] Post-completion: client gets review form
+[ ] Reviews shown on pandit profile
+[ ] Average rating auto-calculated and stored on PanditProfile
+[ ] Create `notifications` app
+[ ] Email helpers: booking confirmation, pandit approval, cancellation
+[ ] SMS via Fast2SMS: booking confirmed (basic)
+[ ] Run all + FULL MVP TEST
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MVP DELIVERY CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] All pages mobile responsive
+[ ] Error pages (404, 500) in Jinja2
+[ ] Login-required protection on all dashboard routes
+[ ] Role-based redirects (client vs pandit vs admin)
+[ ] No broken links on any page
+[ ] SEO: title, meta description on all pages
+[ ] Deployed on local dev — error free
+
+================================================================================
+  PHASE 1 — "FULL BUSINESS LAUNCH" (Week 3-4)
+================================================================================
+
+GOAL: Real money flows. Pandits get paid. Platform earns commission.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 1 STEP 1 — Razorpay Online Payment
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Install razorpay Python SDK
+[ ] Create `payments` app
+[ ] Transaction model:
+    - booking (OneToOne)
+    - razorpay_order_id
+    - razorpay_payment_id
+    - razorpay_signature
+    - total_amount
+    - commission_amount
+    - pandit_amount
+    - payment_status: PENDING / SUCCESS / FAILED / REFUNDED
+[ ] Payment flow:
+    - Create Razorpay order on checkout
+    - Razorpay JS popup on booking summary page
+    - Verify webhook/signature on callback
+    - On success: booking status → CONFIRMED, Transaction recorded
+    - On failure: booking status → FAILED
+[ ] Commission auto-calculation:
+    global_commission = 20% (configurable from admin)
+    pandit_overrride = per-pandit setting
+    pandit_amount = total - commission
+[ ] Admin revenue ledger page (all transactions, total commission earned)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 1 STEP 2 — Payout System
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Payout model:
+    - pandit (FK)
+    - amount
+    - status: PENDING / APPROVED / PAID
+    - requested_at, paid_at
+    - remark
+[ ] Pandit can request payout from dashboard
+[ ] Admin approves payout (with UTR reference upload)
+[ ] Pandit sees payout history
+[ ] Email notification on payout approval
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 1 STEP 3 — Cancellation & Refund Policy
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Cancellation policy settings in admin
+[ ] Client cancel: auto-refund if >48hr before puja date
+[ ] Pandit cancel: full refund to client
+[ ] Razorpay refund API integration
+[ ] Refund tracked in Transaction model
+[ ] Email to client on refund initiated
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 1 STEP 4 — Slot / Availability System
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] AvailabilitySlot model:
+    - pandit (FK)
+    - date
+    - time_slot (choices: morning / afternoon / evening)
+    - is_booked
+[ ] Pandit sets available slots from dashboard calendar UI
+[ ] Client sees only available slots on booking page (HTMX)
+[ ] On booking confirm: slot marked as booked
+[ ] On cancel: slot unlocked
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 1 STEP 5 — Invoice PDF
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Install WeasyPrint or xhtml2pdf
+[ ] Invoice template (booking details, amount, pandit info)
+[ ] Download Invoice button on My Bookings page
+[ ] PDF served as download response
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 1 STEP 6 — Enhanced Admin Dashboard
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Revenue report (daily / weekly / monthly charts via Chart.js)
+[ ] Top pandits by bookings
+[ ] City-wise booking breakdown
+[ ] Transaction audit log
+[ ] Payout approval queue
+[ ] Refund management table
+[ ] Export bookings/transactions to CSV
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 1 STEP 7 — Enhanced Notifications
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Email templates (HTML) for all key events:
+    - Booking confirmed
+    - Booking cancelled / refunded
+    - Pandit approved / rejected
+    - Payout approved
+    - Review received
+[ ] SMS reminders 24hr before puja (cron via django-crontab)
+[ ] In-app notification bell (unread count, dropdown list)
+[ ] Notification model: user, message, is_read, created_at
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 1 STEP 8 — Blog + Static Pages
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Blog model: title, slug, content, image, published_at
+[ ] Blog listing + detail page
+[ ] Static pages: About, Contact, Terms, Privacy, FAQ
+[ ] Contact form with email forwarding
+[ ] SEO: OG tags, canonical URL, sitemap.xml, robots.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 1 DELIVERY CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Razorpay test + live keys tested
+[ ] Full booking → payment → payout flow working
+[ ] Refund policy applied correctly
+[ ] PDF invoice downloads correctly
+[ ] All email templates rendering in Gmail
+[ ] Admin can export CSV
+[ ] Deployed to VPS (Ubuntu + Nginx + Gunicorn)
+[ ] PostgreSQL DB configured in production
+[ ] SSL (HTTPS) via Let's Encrypt
+[ ] Error-free in production
+
+================================================================================
+  PHASE 2 — "GROWTH & SCALE" (Week 5-7)
+================================================================================
+
+GOAL: Retention, automation, analytics, multi-state, mobile-ready API.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 2 STEP 1 — Wallet System
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Wallet model: user, balance, last_updated
+[ ] WalletTransaction model: wallet, amount, type (CREDIT/DEBIT), reference, note
+[ ] Clients: add money to wallet via Razorpay
+[ ] Pay booking using wallet balance
+[ ] Pandits: earnings credited to wallet (manual payout from wallet)
+[ ] Admin: wallet overview, bulk credit/debit
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 2 STEP 2 — Pandit Subscription / Featured Listing
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] SubscriptionPlan model: name, price/month, max_bookings, featured
+[ ] Pandit subscribes to a plan (Razorpay subscription API)
+[ ] Featured pandits shown at top of listings
+[ ] Badge on pandit card: "Featured" / "Verified"
+[ ] Plan expiry handled automatically
+[ ] Admin: manage plans, view active subscriptions
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 2 STEP 3 — WhatsApp Notifications
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Integrate Twilio WhatsApp API or Meta Cloud API
+[ ] Send WhatsApp on:
+    - Booking confirmed
+    - Pandit accepted / rejected booking
+    - 24hr reminder before puja
+    - Payout status update
+[ ] Template messages approved by Meta
+[ ] Fallback to SMS if WhatsApp fails
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 2 STEP 4 — Dynamic / Surge Pricing
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Admin defines surge dates (festivals, weekends)
+[ ] SurgePricing model: date, multiplier, city
+[ ] Price auto-adjusted on booking summary step
+[ ] Pandit notified of surge bookings
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 2 STEP 5 — Analytics Dashboard (Admin)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Revenue chart (monthly, city-wise)
+[ ] Top performing pandits (bookings + earnings)
+[ ] Top puja categories (demand analysis)
+[ ] Client retention rate
+[ ] Booking funnel (viewed → booked → completed)
+[ ] Export full reports (PDF + CSV)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 2 STEP 6 — REST API (Mobile App Ready)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Install Django REST Framework + Simple JWT
+[ ] API endpoints:
+    - POST /api/auth/register/
+    - POST /api/auth/login/
+    - GET  /api/pandits/?city=&puja=
+    - GET  /api/pandits/<id>/
+    - POST /api/bookings/create/
+    - GET  /api/bookings/my/
+    - POST /api/reviews/create/
+    - GET  /api/wallet/balance/
+[ ] Swagger docs via drf-spectacular
+[ ] JWT authentication for all protected endpoints
+[ ] Rate limiting
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 2 STEP 7 — Multi-State Expansion
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Add State model: name, slug, is_active
+[ ] City linked to State
+[ ] City selector shows states first, then cities
+[ ] Pandit filtered by state or city
+[ ] SEO landing pages: /puja-in-surat/, /puja-in-ahmedabad/
+[ ] New city onboarding workflow in admin
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 2 STEP 8 — Security Hardening
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Admin audit log (who did what, when)
+[ ] Rate limiting on login/register (django-axes)
+[ ] 2FA for admin login (TOTP via pyotp)
+[ ] CAPTCHA on register form
+[ ] Payment webhook signature validation (already in Phase 1, harden here)
+[ ] Data encryption for bank details (encrypted fields)
+[ ] Automated daily DB backups
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 2 DELIVERY CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] Wallet adds/deducts correctly with no double-spend bugs
+[ ] Subscription billing cycle working
+[ ] WhatsApp messages delivered end-to-end
+[ ] API tested via Postman
+[ ] Swagger docs accessible at /api/docs/
+[ ] Analytics dashboard rendering accurate data
+[ ] Multi-city pages live
+[ ] Full security audit done
+[ ] Load tested: 100 concurrent users OK
+[ ] Mobile app team given API docs
+
+================================================================================
+  USER INTERFACE DESIGN PRINCIPLES
+================================================================================
+
+CLIENT INTERFACE (Simple & Trust-building)
+  - Clean search bar: City + Puja type → "Find Pandit" button
+  - Pandit cards: photo, stars, price, "Book Now" (big button)
+  - Booking steps clearly numbered (1, 2, 3)
+  - Big CTA buttons: saffron/orange color
+  - Mobile-first, works on all phones
+
+PANDIT DASHBOARD (Practical & Focused)
+  - First screen = today's bookings (Accept/Reject in 1 click)
+  - Earnings shown prominently in ₹ format
+  - Profile completion progress bar
+  - Simple calendar to block dates
+  - Request payout in 1 click
+
+ADMIN DASHBOARD (Power + Control)
+  - Sidebar navigation, always visible
+  - Approval queue at top = pandits waiting
+  - KPI cards: Today's bookings, revenue, pending payouts
+  - All tables have search + filter + export
+  - Color-coded status badges
+  - Alert bar for urgent items (pending payouts > 3 days)
+
+================================================================================
+  TEST USER CREDENTIALS (see test_user.txt)
+================================================================================
+
+================================================================================
+  REQUIREMENTS.TXT (Phase-wise)
+================================================================================
+
+MVP:
+  django>=5.0
+  jinja2
+  Pillow
+  python-decouple
+  whitenoise
+  django-crispy-forms
+  fast2sms  (or similar SMS SDK)
+
+Phase 1 additions:
+  razorpay
+  weasyprint   (or xhtml2pdf)
+  django-crontab
+
+Phase 2 additions:
+  djangorestframework
+  djangorestframework-simplejwt
+  drf-spectacular
+  twilio
+  django-axes
+  pyotp
+
+================================================================================
+  DEV NOTES
+================================================================================
+
+- Always test each step before moving to next
+- Run: python durga.py   →  clears cache + starts dev server
+- Track progress in dev.txt
+- Keep MVP working at all times — do not break MVP while adding Phase 1
+- Each phase deployed and tested before starting next
+- Commission % stored in settings model (DB), not hardcoded
+- All currency in INR (₹)
+- All datetime in IST (Asia/Kolkata)
+
+================================================================================

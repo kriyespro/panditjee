@@ -1,0 +1,29 @@
+================================================================================
+  TEST CREDENTIALS - ONLINE PANDIT JEE
+  Server: http://127.0.0.1:8888/
+================================================================================
+
+1. ADMIN USER
+   Email    : admin@sd.com
+   Password : admin123
+   Role     : System Administrator
+   Admin    : http://127.0.0.1:8888/sd/      (Django Admin)
+   Dashboard: http://127.0.0.1:8888/admin/   (Custom Dashboard)
+
+2. PANDIT ACCOUNTS
+   A. Approved Pandit
+      Email    : pandit.ram@sd.com
+      Password : pandit123
+      Status   : APPROVED
+
+   B. Pending Pandit
+      Email    : pandit.shyam@sd.com
+      Password : pandit123
+      Status   : PENDING
+
+3. CLIENT ACCOUNT
+   Email    : client.rahul@sd.com
+   Password : client123
+   Role     : Regular User / Client
+
+================================================================================
