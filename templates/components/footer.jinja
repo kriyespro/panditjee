@@ -7,53 +7,73 @@
       <!-- Brand column -->
       <div class="lg:col-span-2">
         <div class="flex items-center gap-3 mb-5">
-          <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-2xl shadow">🕉️</div>
+          <div class="w-11 h-11 bg-gradient-to-br from-orange-500 to-brand-700 rounded-xl flex items-center justify-center text-2xl shadow-lg">🕉️</div>
           <div>
-            <div class="font-bold text-white text-lg leading-none">SD PanditJee</div>
-            <div class="text-xs text-gray-500 mt-0.5">Online Booking Platform</div>
+            <div class="font-black text-white text-xl leading-none">SD PanditJee</div>
+            <div class="text-xs text-gray-500 mt-0.5 font-medium">Online Pandit Booking Platform</div>
           </div>
         </div>
-        <p class="text-sm leading-relaxed max-w-xs mb-6">
-          India's trusted platform for booking verified and experienced pandits for all your sacred ceremonies — anywhere in Gujarat.
+        <p class="text-sm leading-relaxed max-w-xs mb-6 text-gray-500">
+          India's trusted platform for booking verified and experienced pandits for all your sacred ceremonies — anywhere in Gujarat. 🙏
         </p>
+        <!-- Trust badges -->
+        <div class="flex items-center gap-2 mb-6 flex-wrap">
+          <span class="inline-flex items-center gap-1 bg-gray-800 text-green-400 text-xs font-medium px-3 py-1 rounded-full border border-gray-700">✓ Verified Pandits</span>
+          <span class="inline-flex items-center gap-1 bg-gray-800 text-yellow-400 text-xs font-medium px-3 py-1 rounded-full border border-gray-700">⭐ 4.9 Rated</span>
+          <span class="inline-flex items-center gap-1 bg-gray-800 text-blue-400 text-xs font-medium px-3 py-1 rounded-full border border-gray-700">🔒 Secure</span>
+        </div>
+        <!-- Social -->
         <div class="flex gap-2">
-          {% for (icon, label) in [('📘','Facebook'),('📸','Instagram'),('🐦','Twitter'),('📺','YouTube')] %}
+          {% for icon, label in [('📘','Facebook'),('📸','Instagram'),('🐦','Twitter'),('📺','YouTube')] %}
           <a href="#" aria-label="{{ label }}"
-             class="w-9 h-9 rounded-xl bg-gray-800 hover:bg-brand-600 flex items-center justify-center text-sm transition-all duration-200 hover:scale-105">
+             class="w-9 h-9 rounded-xl bg-gray-800 hover:bg-gradient-to-br hover:from-orange-500 hover:to-brand-700 flex items-center justify-center text-sm transition-all duration-200 hover:scale-110">
             {{ icon }}
           </a>
           {% endfor %}
         </div>
       </div>
 
-      <!-- Quick Links -->
+      <!-- Platform Links -->
       <div>
-        <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-5">Platform</h4>
+        <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-5">Platform</h4>
         <ul class="space-y-3 text-sm">
-          {% for (label, href) in [('Find Pandit', url('core:pandit_list')), ('Register as Client', url('users:register_client')), ('Join as Pandit', url('users:register_pandit')), ('Login', url('users:login'))] %}
+          {% for label, href in [
+            ('Find a Pandit', url('core:pandit_list')),
+            ('Book as Client', url('users:register_client')),
+            ('Join as Pandit', url('users:register_pandit')),
+            ('About Us', url('core:about')),
+            ('Contact Us', url('core:contact')),
+            ('FAQ', url('core:faq')),
+          ] %}
           <li>
-            <a href="{{ href }}" class="hover:text-white transition-colors flex items-center gap-1.5">
-              <span class="w-1 h-1 rounded-full bg-brand-500 shrink-0"></span>{{ label }}
+            <a href="{{ href }}" class="hover:text-orange-400 transition-colors flex items-center gap-2 group">
+              <span class="w-1.5 h-1.5 rounded-full bg-orange-500/50 group-hover:bg-orange-400 shrink-0 transition-colors"></span>{{ label }}
             </a>
           </li>
           {% endfor %}
         </ul>
       </div>
 
-      <!-- Cities -->
+      <!-- Cities + Legal -->
       <div>
-        <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-5">Cities</h4>
-        <ul class="space-y-3 text-sm">
-          {% for (city, slug) in [('Surat','surat'),('Ahmedabad','ahmedabad'),('Vadodara','vadodara')] %}
+        <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-5">Cities</h4>
+        <ul class="space-y-3 text-sm mb-8">
+          {% for city, slug in [('Surat','surat'),('Ahmedabad','ahmedabad'),('Vadodara','vadodara'),('Rajkot','rajkot'),('Bhavnagar','bhavnagar')] %}
           <li>
             <a href="{{ url('core:pandit_list') }}?city={{ slug }}"
-               class="hover:text-white transition-colors flex items-center gap-1.5">
-              <span class="w-1 h-1 rounded-full bg-brand-500 shrink-0"></span>📍 {{ city }}
+               class="hover:text-orange-400 transition-colors flex items-center gap-2 group">
+              <span class="w-1.5 h-1.5 rounded-full bg-orange-500/50 group-hover:bg-orange-400 shrink-0 transition-colors"></span>📍 {{ city }}
             </a>
           </li>
           {% endfor %}
         </ul>
+        <div class="p-4 bg-gray-900 rounded-xl border border-gray-800">
+          <p class="text-xs text-gray-500 mb-2">📞 Support Hours</p>
+          <p class="text-white text-sm font-medium">+91 98765 43210</p>
+          <p class="text-gray-500 text-xs mt-1">Mon–Sat, 9 AM – 7 PM IST</p>
+        </div>
       </div>
+
     </div>
   </div>
 
@@ -63,11 +83,12 @@
   <!-- Bottom bar -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
-      <p>© 2024 SD PanditJee. All rights reserved.</p>
+      <p>© 2026 SD Online Pandit Jee. Made with 🙏 in Gujarat, India.</p>
       <div class="flex gap-5">
-        {% for label in ['Privacy Policy', 'Terms of Service', 'Contact Us', 'Refund Policy'] %}
-        <a href="#" class="hover:text-white transition-colors">{{ label }}</a>
-        {% endfor %}
+        <a href="{{ url('core:privacy') }}" class="hover:text-orange-400 transition-colors">Privacy Policy</a>
+        <a href="{{ url('core:terms') }}" class="hover:text-orange-400 transition-colors">Terms of Service</a>
+        <a href="{{ url('core:contact') }}" class="hover:text-orange-400 transition-colors">Contact Us</a>
+        <a href="{{ url('core:faq') }}" class="hover:text-orange-400 transition-colors">FAQ</a>
       </div>
     </div>
   </div>
